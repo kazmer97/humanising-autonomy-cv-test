@@ -84,7 +84,7 @@ def main(video_path: str, resource_path: str, title: str) -> NoReturn:
         # run whilst there are frames and the window is still open
         while success:
             
-            # add rectangles to the video   
+            # add rectangles, centre point and ID text to the video
             for b in tagged_video_boxes[frame_counter]:
                 cv2.rectangle(frame, pt1= (b.x, b.y), pt2=(b.x + b.width, b.y + b.height), color = b.color)
                 cv2.circle(frame, center=b.centre_point(), radius=0, color=(0,0,255), thickness=10)
@@ -94,7 +94,7 @@ def main(video_path: str, resource_path: str, title: str) -> NoReturn:
             smaller_image = cv2.resize(frame, (floor(width // 2), floor(height // 2)))
 
             # display it
-            cv2.imshow(title, frame)
+            cv2.imshow(title, smaller_image)
 
             # test for quit key
             # cv2.waitKey(wait_time)
