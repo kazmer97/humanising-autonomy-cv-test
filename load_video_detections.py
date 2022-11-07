@@ -3,8 +3,13 @@ import math
 from collections import OrderedDict
 
 
+# debug resource path saved
 RESOURCE_PATH = "resources/video_1_detections.json"
 
+
+# class specific settings
+
+# color of classes 
 class_color = {
     "car":(255,0,0), #blue
     "person":(0,255,255), #yellow
@@ -14,21 +19,18 @@ class_color = {
     "motorbike":(0,0,255) # red
 }
 
-def load_json(file):
-    with open(file) as json_file:
-        data = json.load(json_file)
-
-    return data
-
+# how many frames can an object be out of sight to be still considered the same
 class_forget_time_frames = {
     "car"      : 180,
     "person"   : 480, 
     "truck"    : 340,
-    "bicycle"  : 60, 
+    "bicycle"  : 180, 
     "bus"      : 340,
-    "motorbike": 60 
+    "motorbike": 180 
 }
 
+# the distance between centerpoints for which it is still considered as the same object
+# middle of large objects is prone to move more with each frame
 class_distance = {
     "car"      : 150,
     "person"   : 40, 
@@ -38,8 +40,15 @@ class_distance = {
     "motorbike": 60  
 }
 
+# load the data
+def load_json(file):
+    with open(file) as json_file:
+        data = json.load(json_file)
+
+    return data
 
 
+# class for storing bounding box data
 class bounding_box():
     def __init__(self, frame, det_class, x, y, width, height, score, color):
 
@@ -68,7 +77,8 @@ class bounding_box():
     def print_example(self):
         print("frame",self.frame, self.x,self.y, "class", self.det_class)
 
-    
+
+# return dictionary of all bounding boxes per frame
 def load_bounding_boxes(resource_path):
     
     Video = OrderedDict()
@@ -115,6 +125,7 @@ class EuclideanDistTracker:
         self.det_class = {}
 
 
+# return dictionary of frames with all bounding box objects tagged with tracking id
 def assign_id(Video):
 
     tracker = EuclideanDistTracker()
@@ -184,9 +195,7 @@ def assign_id(Video):
                     else:
                         tagged_video[frame].append(obj) 
                 
-                # tracker.center_points.clear()
-                # tracker.centre_point_update.clear()
-                # tracker.det_class.clear()
+                
                 tracker.center_points = new_centre_points.copy()
                 tracker.centre_point_update = new_centre_points_update.copy()
                 tracker.det_class = new_det_class.copy()
@@ -207,11 +216,11 @@ def assign_id(Video):
 
 if __name__ == "__main__":
     
+
+    # debug prints
     a = load_json(RESOURCE_PATH)
     x = load_bounding_boxes(RESOURCE_PATH)
     tagged_x = assign_id(x)
     print(x)
     print(tagged_x)
 
-
-    # print(a["1"]['bounding boxes'][0][1])

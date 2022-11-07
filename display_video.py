@@ -1,6 +1,6 @@
 from math import floor
 from typing import NoReturn
-import load_box
+import load_video_detections
 
 import cv2
 
@@ -68,9 +68,9 @@ def main(video_path: str, resource_path: str, title: str) -> NoReturn:
     width, height = get_frame_dimensions(video_capture)
     wait_time = get_frame_display_time(video_capture)
 
-    video_boxes = load_box.load_bounding_boxes(resource_path)
+    video_boxes = load_video_detections.load_bounding_boxes(resource_path)
 
-    tagged_video_boxes = load_box.assign_id(video_boxes)
+    tagged_video_boxes = load_video_detections.assign_id(video_boxes)
 
     try:
         # read the first frame
@@ -82,6 +82,7 @@ def main(video_path: str, resource_path: str, title: str) -> NoReturn:
         frame_counter = 1
 
         # run whilst there are frames and the window is still open
+        # had to change this line to get it to work on mac
         while success:
             
             # add rectangles, centre point and ID text to the video
@@ -96,8 +97,8 @@ def main(video_path: str, resource_path: str, title: str) -> NoReturn:
             # display it
             cv2.imshow(title, smaller_image)
 
-            # test for quit key
-            # cv2.waitKey(wait_time)
+            
+            # slight change to allow it to work on mac
             if cv2.waitKey(wait_time) == ord("q"):
                 break
 
